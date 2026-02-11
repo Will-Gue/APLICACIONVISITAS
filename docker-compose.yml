@@ -1,0 +1,66 @@
+version: '3.8'
+
+services:
+  # Base de datos SQL Server
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: visitapp-sqlserver
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=VisitApp123!
+      - MSSQL_PID=Express
+    ports:
+      - "1433:1433"
+    volumes:
+      - sqlserver_data:/var/opt/mssql
+    networks:
+      - visitapp-network
+    healthcheck:
+      test: ["CMD-SHELL", "/opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P VisitApp123! -Q 'SELECT 1'"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  # API Backend
+  visitapp-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: visitapp-api
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__DefaultConnection=Server=sqlserver,1433;Database=VisitApp;User Id=sa;Password=VisitApp123!;TrustServerCertificate=True;MultipleActiveResultSets=true
+      - Jwt__Key=your-super-secret-jwt-key-for-production-make-it-very-long-and-secure-123456789
+      - Jwt__ExpirationDays=7
+    ports:
+      - "5254:5254"
+    depends_on:
+      sqlserver:
+        condition: service_healthy
+    networks:
+      - visitapp-network
+    volumes:
+      - ./logs:/app/logs
+    restart: unless-stopped
+
+  # Flutter Web (opcional para desarrollo)
+  visitapp-web:
+    build:
+      context: ../Visit_app/visit_app_flutter
+      dockerfile: Dockerfile.web
+    container_name: visitapp-web
+    ports:
+      - "3000:80"
+    depends_on:
+      - visitapp-api
+    networks:
+      - visitapp-network
+    restart: unless-stopped
+
+volumes:
+  sqlserver_data:
+    driver: local
+
+networks:
+  visitapp-network:
+    driver: bridge

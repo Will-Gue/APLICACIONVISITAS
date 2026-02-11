@@ -640,7 +640,6 @@ flutter analyze
 # Ver qué device está disponible
 flutter devices
 ```
-
 ---
 
 **Próxima revisión después de completar Fase 1**

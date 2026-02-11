@@ -1,72 +1,14 @@
-﻿        /// <summary>
-        /// Método auxiliar para disparar notificaciones de visitas próximas y recordatorios.
-        /// No modifica la lógica de visitas ni afecta flujos actuales.
-        /// Pensado para ser llamado por tareas programadas, jobs externos o integración futura.
-        /// </summary>
-        /// <remarks>
-        /// Ejemplo de uso: enviar notificaciones a usuarios con visitas en las próximas 24h.
-        /// </remarks>
-        /// <param name="hoursAhead">Horas hacia adelante para buscar visitas próximas (por defecto 24h)</param>
-        /// <returns>Cantidad de notificaciones generadas</returns>
-        [NonAction]
-        public async Task<int> DispararNotificacionesVisitasProximasAsync(int hoursAhead = 24)
-        {
-            var ahora = DateTime.UtcNow;
-            var hasta = ahora.AddHours(hoursAhead);
-            // Buscar visitas programadas en el rango
-            var visitas = await _context.Visits
-                .Where(v => v.ScheduledDate >= ahora && v.ScheduledDate <= hasta && v.Status == "Pendiente")
-                .Include(v => v.User)
-                .Include(v => v.Contact)
-                .ToListAsync();
-
-            int notificacionesEnviadas = 0;
-            foreach (var visita in visitas)
-            {
-                if (visita.User == null || string.IsNullOrEmpty(visita.User.Email))
-                    continue;
-
-                var mensaje = $"Tienes una visita programada con {visita.Contact?.FullName ?? "contacto"} el {visita.ScheduledDate:yyyy-MM-dd HH:mm}.";
-
-                // Crear notificación en base de datos
-                var notificacion = new Notifications
-                {
-                    UserId = visita.UserId,
-                    VisitId = visita.VisitId,
-                    Type = "email",
-                    Message = mensaje,
-                    IsRead = false,
-                    CreatedAt = DateTime.UtcNow
-                };
-                _context.Notifications.Add(notificacion);
-
-                // Enviar email (opcional, se puede comentar si solo se quiere push/local)
-                try
-                {
-                    await _emailService.SendEmailAsync(visita.User.Email, "Recordatorio de visita próxima", mensaje);
-                    notificacionesEnviadas++;
-                }
-                catch (Exception ex)
-                {
-                    _logger.LogError(ex, $"Error enviando email de recordatorio a {visita.User.Email}");
-                }
-            }
-            await _context.SaveChangesAsync();
-            return notificacionesEnviadas;
-        }
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Visitapp.Data;
-using Visitapp.Models;
-
-using Visitapp.Dtos;
+using Visitapp.Domain.Entities;
+using Visitapp.Application.DTOs;
 using Visitapp.Application.Interfaces;
 
 namespace Visitapp.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-
     public class NotificationsController : ControllerBase
     {
         private readonly VisitAppContext _context;
@@ -368,6 +310,63 @@ namespace Visitapp.Controllers
                 _logger.LogError(ex, "Error al marcar todas las notificaciones como leídas para el usuario {UserId}", userId);
                 return StatusCode(500, new { message = "Error interno del servidor" });
             }
+        }
+
+        /// <summary>
+        /// Método auxiliar para disparar notificaciones de visitas próximas y recordatorios.
+        /// No modifica la lógica de visitas ni afecta flujos actuales.
+        /// Pensado para ser llamado por tareas programadas, jobs externos o integración futura.
+        /// </summary>
+        /// <remarks>
+        /// Ejemplo de uso: enviar notificaciones a usuarios con visitas en las próximas 24h.
+        /// </remarks>
+        /// <param name="hoursAhead">Horas hacia adelante para buscar visitas próximas (por defecto 24h)</param>
+        /// <returns>Cantidad de notificaciones generadas</returns>
+        [NonAction]
+        public async Task<int> DispararNotificacionesVisitasProximasAsync(int hoursAhead = 24)
+        {
+            var ahora = DateTime.UtcNow;
+            var hasta = ahora.AddHours(hoursAhead);
+            // Buscar visitas programadas en el rango
+            var visitas = await _context.Visits
+                .Where(v => v.ScheduledDate >= ahora && v.ScheduledDate <= hasta && v.Status == "Pendiente")
+                .Include(v => v.User)
+                .Include(v => v.Contact)
+                .ToListAsync();
+
+            int notificacionesEnviadas = 0;
+            foreach (var visita in visitas)
+            {
+                if (visita.User == null || string.IsNullOrEmpty(visita.User.Email))
+                    continue;
+
+                var mensaje = $"Tienes una visita programada con {visita.Contact?.FullName ?? "contacto"} el {visita.ScheduledDate:yyyy-MM-dd HH:mm}.";
+
+                // Crear notificación en base de datos
+                var notificacion = new Notifications
+                {
+                    UserId = visita.UserId,
+                    VisitId = visita.VisitId,
+                    Type = "email",
+                    Message = mensaje,
+                    IsRead = false,
+                    CreatedAt = DateTime.UtcNow
+                };
+                _context.Notifications.Add(notificacion);
+
+                // Enviar email (opcional, se puede comentar si solo se quiere push/local)
+                try
+                {
+                    await _emailService.SendEmailAsync(visita.User.Email, "Recordatorio de visita próxima", mensaje);
+                    notificacionesEnviadas++;
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, $"Error enviando email de recordatorio a {visita.User.Email}");
+                }
+            }
+            await _context.SaveChangesAsync();
+            return notificacionesEnviadas;
         }
     }
 }

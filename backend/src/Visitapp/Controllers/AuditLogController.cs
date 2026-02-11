@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Visitapp.Application.Common.Interfaces;
-using Visitapp.Domain.Models;
+using Visitapp.Domain.Entities;
 
 namespace Visitapp.Controllers
 {

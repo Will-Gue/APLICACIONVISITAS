@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Visitapp.Domain.Models;
+using Visitapp.Domain.Entities;
 using Visitapp.Application.Common.Interfaces;
 
 namespace Visitapp.Infrastructure.Repositories

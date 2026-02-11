@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Visitapp.Data;
-using Visitapp.Models;
+using Visitapp.Domain.Entities;
 using Visitapp.Application.DTOs.Leader;
 using System.Linq;
 using System.Threading.Tasks;

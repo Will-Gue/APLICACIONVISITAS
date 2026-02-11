@@ -1,11 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Visitapp.Data;
-using Visitapp.Models;
-using Visitapp.Dtos;
-using System.Net.Mail;
+using Visitapp.Domain.Entities;
+using Visitapp.Application.DTOs;
 using Visitapp.Application.Common.Interfaces;
-using Visitapp.Domain.Models;
 using System.Security.Claims;
 
 namespace Visitapp.Controllers
@@ -66,7 +64,7 @@ namespace Visitapp.Controllers
             if (!_passwordService.VerifyPassword(dto.Password, user.PasswordHash))
                 return BadRequest(new { message = "Contraseña incorrecta" });
 
-            if (string.IsNullOrWhiteSpace(dto.NewEmail) || !IsValidEmail(dto.NewEmail))
+            if (string.IsNullOrWhiteSpace(dto.NewEmail) || !Visitapp.Application.Common.Utils.EmailUtils.IsValidEmail(dto.NewEmail))
                 return BadRequest(new { message = "Email no válido" });
 
             if (await _context.Users.AnyAsync(u => u.Email == dto.NewEmail && u.UserId != id))
@@ -167,7 +165,7 @@ namespace Visitapp.Controllers
         {
             try
             {
-                if (string.IsNullOrWhiteSpace(dto.Email) || !IsValidEmail(dto.Email))
+                if (string.IsNullOrWhiteSpace(dto.Email) || !Visitapp.Application.Common.Utils.EmailUtils.IsValidEmail(dto.Email))
                     return BadRequest(new { message = "Email no válido" });
 
                 if (string.IsNullOrWhiteSpace(dto.Password) || dto.Password.Length < 6)
@@ -335,17 +333,6 @@ namespace Visitapp.Controllers
             }
         }
 
-        private static bool IsValidEmail(string email)
-        {
-            try
-            {
-                var addr = new MailAddress(email);
-                return addr.Address == email;
-            }
-            catch
-            {
-                return false;
-            }
-        }
+        // Método IsValidEmail movido a servicio de utilidades
     }
 }

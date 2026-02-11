@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Visitapp.Data;
-using Visitapp.Models;
+using Visitapp.Domain.Entities;
 using System.Security.Claims;
 using System.Collections.Generic;
 using System.Threading.Tasks;

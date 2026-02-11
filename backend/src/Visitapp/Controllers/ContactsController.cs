@@ -1,10 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Visitapp.Data;
-using Visitapp.Models;
-using Visitapp.Dtos;
+using Visitapp.Domain.Entities;
+using Visitapp.Application.DTOs;
 using Visitapp.Application.Common.Interfaces;
-using Visitapp.Domain.Models;
 using System.Security.Claims;
 
 namespace Visitapp.Controllers

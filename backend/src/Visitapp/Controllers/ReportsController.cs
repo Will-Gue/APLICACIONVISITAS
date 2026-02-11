@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using OfficeOpenXml;
-using Visitapp.Services;
+// Reports using EPPlus and QuestPDF
 using Visitapp.Data;
-using Visitapp.Models;
+using Visitapp.Domain.Entities;
 
 namespace Visitapp.Controllers
 {

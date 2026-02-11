@@ -936,4 +936,3 @@ Feature: Edición de perfil de familia
 
 ---
 
-# ...otros criterios generales y definiciones de terminado pueden agregarse al final si se requiere...

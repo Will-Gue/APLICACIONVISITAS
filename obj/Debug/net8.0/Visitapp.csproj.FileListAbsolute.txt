@@ -1,0 +1,8 @@
+C:\Users\user\Documents\visit\appvisitasnew\VisitApp\backend\src\Visitapp\obj\Debug\net8.0\Visitapp.csproj.AssemblyReference.cache
+C:\Users\user\Documents\visit\appvisitasnew\VisitApp\backend\src\Visitapp\obj\Debug\net8.0\rpswa.dswa.cache.json
+C:\Users\user\Documents\visit\appvisitasnew\VisitApp\backend\src\Visitapp\obj\Debug\net8.0\Visitapp.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\user\Documents\visit\appvisitasnew\VisitApp\backend\src\Visitapp\obj\Debug\net8.0\Visitapp.AssemblyInfoInputs.cache
+C:\Users\user\Documents\visit\appvisitasnew\VisitApp\backend\src\Visitapp\obj\Debug\net8.0\Visitapp.AssemblyInfo.cs
+C:\Users\user\Documents\visit\appvisitasnew\VisitApp\backend\src\Visitapp\obj\Debug\net8.0\Visitapp.csproj.CoreCompileInputs.cache
+C:\Users\user\Documents\visit\appvisitasnew\VisitApp\backend\src\Visitapp\obj\Debug\net8.0\Visitapp.MvcApplicationPartsAssemblyInfo.cs
+C:\Users\user\Documents\visit\appvisitasnew\VisitApp\backend\src\Visitapp\obj\Debug\net8.0\Visitapp.MvcApplicationPartsAssemblyInfo.cache
